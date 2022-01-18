@@ -26,10 +26,10 @@ usage()
 
 # Make sure the turbo version is greater than what is currently deployed
 versionTag=$(grep 'tag' /opt/turbonomic/kubernetes/operator/deploy/crds/charts_v1alpha1_xl_cr.yaml | head -n1 | awk '{print $2}')
-versionTag=${versionTag/-SNAPSHOT/}
-currentTag=$(echo ${versionTag} | sed 's/\.//g')
+cleanVersionTag=${versionTag/-SNAPSHOT/}
+currentTag=$(echo ${cleanVersionTag} | sed 's/\.//g')
 updateTag=$(echo ${turboVersion} | sed 's/\.//g')
-if [[ "${updateTag}" < "${currentTag}" ]] || [[ "${updateTag}" = "${currentTag}" ]]
+if ([[ "${updateTag}" < "${currentTag}" ]]) || ([[ "${updateTag}" = "${currentTag}" ]] && [[ ! ${versionTag} =~ "SNAPSHOT" ]])
 then
   echo "Exiting....."
   echo "Ensure that the OpsManager is upgraded to a newer version than the current version"
